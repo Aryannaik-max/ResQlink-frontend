@@ -25,6 +25,7 @@ const CrewRegistration = () => {
     const handleVerification = (e) => {
         e.preventDefault();
         
+        
     }
 
     const handleSubmitRegistration = (e) => {
