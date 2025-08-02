@@ -8,7 +8,8 @@ const CreateEmergency = () => {
       emergencyType: '',
       location: '',
       description: '',
-      contactNumber: ''
+      contactNumber: '',
+      noOfPatients: ''
   });
 
   const handelChange = (e) => {
@@ -29,7 +30,7 @@ const CreateEmergency = () => {
 
   return (
     <div className='flex flex-col items-center justify-center h-screen bg-gradient-to-tl from-gray-700 to-gray-900 overflow-hidden'>
-       <div className='bg-white rounded-2xl w-[90%] md:w-[70%] lg:w-[40%] min-h-[93%] flex flex-col justify-center items-center px-10 pb-2 shadow-black shadow-2xl'>
+       <div className='bg-white w-[40%] h-[95%] p-5 flex flex-col rounded-2xl shadow-2xl shadow-black items-center overflow-y-auto'>
          <div className='flex flex-col items-center mb-5 justify-center'>
             <img src={logo} alt='ResQlink Logo' className='w-20' />
             <h2 className='text-3xl font-bold text-gray-900 pl-10'>Report an Emergency</h2>
@@ -81,6 +82,15 @@ const CreateEmergency = () => {
                     <span className='text-gray-700'>Other</span>
                   </label>
                 </div>
+                <label className='text-lg font-medium text-gray-900 mb-2'>Number Of Patients</label>
+                <input
+                  type='number'
+                  placeholder='Enter your contact number'
+                  className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600'
+                  name='noOfPatients'
+                  value={emergencyData.noOfPatients}
+                  onChange={handelChange}
+                />
                 <label className='text-lg font-medium text-gray-900 mb-2'>Location</label>
                 <div className='flex items-center space-x-5 mb-2'>
                   <input 
