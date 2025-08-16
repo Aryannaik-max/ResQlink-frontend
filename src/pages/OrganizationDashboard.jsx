@@ -1,13 +1,46 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import logo from '../assets/logo.png'
+import { OrgContext } from '../context/OrgContext'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+
 
 const OrganizationDashboard = () => {
   const [organizationData, setOrgainzationData] = useState({
     organizationType: 'HOSPITAL',
-    verifiedStatus: true,
-    totalAmbulance: 50,
-    bedsAvailable: 20
+    verifiedStatus: '',
+    totalAmbulance: '',
+    bedsAvailable: ''
   });
+
+  const { orgDetails} = useContext(OrgContext);
+// useEffect(() => {
+//     const fetchOrganizationData = async () => {
+//       try {
+//         const token = localStorage.getItem('orgtoken');
+//         if(!token) return;
+//         const base = import.meta.env.VITE_BASE_URL_USER;
+//         const response = await axios.get(`${base}/api/v1/organization/me`, {
+//           header: { Authorization: `Bearer ${token}` }
+//         });
+//         const data = response.data.data;
+//         setOrgainzationData({
+//           organizationType: data.organizationType,
+//           verifiedStatus: data.verifiedStatus,
+//           totalAmbulance: data.totalAmbulance,
+//           bedsAvailable: data.bedsAvailable
+//         });
+//       } catch (error) {
+//         console.error('error fetching organization data:', error);  
+//       }
+//     }
+    
+//     fetchOrganizationData();
+// }, []);
+
+
+
+  
   return (
     <div className='flex flex-col items-center justify-center h-screen bg-gradient-to-tl from-gray-700 to-gray-900 overflow-hidden'>
         <div className='bg-white rounded-2xl shadow-black shadow-2xl h-[80%] w-[60%] p-5 overflow-auto'>
@@ -45,7 +78,7 @@ const OrganizationDashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <button className='w-[80%] rounded-xl border-2 h-10'>Manage Resources</button>
+                  <Link to='/manage-resources' className='w-[80%] rounded-xl border-2 h-10 flex justify-center items-center' >Manage Resources</Link>
                 </div>
               </div>
               {organizationData.organizationType==='HOSPITAL'?(

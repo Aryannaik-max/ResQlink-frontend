@@ -1,25 +1,45 @@
-import React, { createContext, useState } from 'react'
+import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
-export const UserDataContext = createContext()
+export const UserContext = createContext()
 
 
-const UserContext = ({ children }) => {
+const UserProvider = ({ children }) => {
 
-    const [ user, setUser ] = useState({
-        email: '',
-        name:'',
-        role:'',
-        phoneNumber:'',
-        address:''
-    });
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect( () => {
+        const fetchUser = async () => {
+            const url = `${import.meta.env.VITE_BASE_URL_USER}/api/v1/me`;
+            const token = localStorage.getItem('token');
+            if(!token) return;
+            try {
+                const res = await axios.get(url, {
+                headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
+
+                setUser(res.data.data);
+                setIsAuthenticated(true);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+        }
+
+        fetchUser();
+    },[]);
 
     return (
         <div>
-            <UserDataContext.Provider value={{ user, setUser }}>
+            <UserContext.Provider value={{ user, setUser, isAuthenticated, setIsAuthenticated }}>
                 {children}
-            </UserDataContext.Provider>
+            </UserContext.Provider>
         </div>
     )
 }
 
-export default UserContext;
+export default UserProvider;

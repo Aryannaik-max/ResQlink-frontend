@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import logo from '../assets/logo.png'
 
-const Profie = () => {
+const Profile = () => {
 
     const [userData, setUserData] = useState({
             name: 'Aryan Naik',
@@ -84,4 +84,4 @@ const Profie = () => {
   )
 }
 
-export default Profie
+export default Profile

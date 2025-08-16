@@ -28,10 +28,10 @@ const UserDashboard = () => {
               <img src={user} alt='User Icon' className='w-7 mb-1' />
               <Link to='/profile' className='text-gray-900 hover:text-blue-600 ml-2 text-sm'> My Profile</Link>
             </div>
-            <div className='flex items-center text-center py-4 px-4'>
+            {/* <div className='flex items-center text-center py-4 px-4'>
               <img src={serviceProvider} alt='Service Provider Icon' className='w-7 mb-1' />
               <Link to='/service-registration' name='service-registration'  className='text-gray-900 hover:text-blue-600 ml-2 text-sm'>Register as service provider</Link>
-            </div>
+            </div> */}
             <div className='flex items-center p-4'>
               <img src={history} alt='History Icon' className='w-7 mb-1' />
               <Link to='/history' className='text-gray-900 hover:text-blue-600 ml-2 text-sm'>History</Link>

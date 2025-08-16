@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import logo from '../assets/logo.png'; 
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ServiceRegistration = () => {
 
+  const navigate = useNavigate();
+
   const [formData,setFormData] = useState({
-    OrganizationName: '',
-    OrganizationType: '',
-    LicenseNumber: '',
-    ContactNumber: '',
-    ContactEmail: '',
-    Address: '',
+    name: '',
+    type: '',
+    registrationNumber: '',
+    password: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
     // ambulance 
     AmbulanceType: '',
     AmbulanceCount: '',
@@ -17,8 +22,7 @@ const ServiceRegistration = () => {
     // hospital
     TotalBeds: '',
     TotalDoc: '',
-    LicenseDocument: '',
-    TermsAndConditions: ''
+    registrationCertificate: ''
   });
 
   const handleChange = (e) => {
@@ -31,8 +35,32 @@ const ServiceRegistration = () => {
   }
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const url = import.meta.env.VITE_BASE_URL_USER;
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('type', formData.type);
+    data.append('registrationNumber', formData.registrationNumber);
+    data.append('phoneNumber', formData.phoneNumber);
+    data.append('email', formData.email);
+    data.append('address', formData.address);
+    data.append('password', formData.password);
+
+    data.append('registrationCertificate', formData.registrationCertificate);
+
+    const response = await axios.post(`${url}/api/v1/organization/register`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    console.log(response.data);
+    const token = response.data.data;
+    localStorage.setItem('orgtoken', token)
+    console.log(response.data);
+    navigate('/organization-dashboard'); 
+
   }
 
   return (
@@ -49,77 +77,93 @@ const ServiceRegistration = () => {
             <label className='text-sm font-medium text-gray-900 mb-2' >Organization Name</label>
             <input 
               type='text' 
-              name='OrganizationName'
-              value={formData.OrganizationName}
+              name='name'
+              value={formData.name}
               placeholder='Enter your location'
-              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
               onChange={handleChange}
             />
             <label className='text-sm font-medium text-gray-900 mb-2'>Organization Type</label>
-            <select
-             className='border border-gray-300 rounded-lg w-full h-12 focus:outline-none focus:ring-2 focus:ring-blue-600 p-3' 
-             type='text'
-             value={formData.OrganizationType}
-             name='OrganizationType'
-             onChange={handleChange}
+            <select 
+              className='border border-gray-300 rounded-lg w-full h-12 focus:outline-none focus:ring-2 focus:ring-purple-600 p-3' 
+              type='text'
+              value={formData.type}
+              name='type'
+              onChange={handleChange}
+            
             >
-              <option value="" disabled selected>Select Type</option> 
-              <option value="hospital">Hospital</option>
-              <option value="ambulance-service">Ambulance service</option>  
-            </select>
+            <option value='' disabled>Choose service</option>
+            <option value="AMBULANCE_SERVICE">Ambulance</option>
+            <option value="HOSPITAL">Hospital</option>
+          </select>
             <input 
               type='text' 
-              name='LicenseNumber'
-              value={formData.LicenseNumber}
+              name='registrationNumber'
+              value={formData.registrationNumber}
               placeholder='Official License/Registration Number'
-              className='p-3  border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+              className='p-3  border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
               onChange={handleChange}
             />
-            {formData.OrganizationType==='hospital' && (
+            <label className='text-sm font-medium text-gray-900 mb-2'>Password</label>
+            <input
+              type='password'
+              name='password'
+              value={formData.password}
+              onChange={handleChange}
+              placeholder='Enter your password'
+              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
+              required
+            />
+            {formData.type==='HOSPITAL' && (
               <>
                 <label className='text-sm font-medium text-gray-900 mb-2'>Total Beds</label>
                 <input 
                   type='text' 
-                  name='ContactEmail'
+                  name='TotalBeds'
                   value={formData.TotalBeds}
+                  onChange={handleChange}
                   placeholder='e.g., 100'
-                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
                 />
                 <label className='text-sm font-medium text-gray-900 mb-2'>Total Doctors</label>
                 <input 
                   type='text' 
-                  name='ContactEmail'
+                  name='TotalDoc'
                   value={formData.TotalDoc}
+                  onChange={handleChange}
                   placeholder='e.g., 25'
-                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
                 />
               </>
             )}
-            {formData.OrganizationType==='ambulance-service' && (
+            {formData.type==='AMBULANCE_SERVICE' && (
               <>
                 <label className='text-sm font-medium text-gray-900 mb-2'>Ambulance Type</label>
                 <input 
                   type='text' 
                   name='AmbulanceType'
                   value={formData.AmbulanceType}
+                  onChange={handleChange}
                   placeholder='e.g., Basic Life Support (BLS), Advanced Life Support (ALS)'
-                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
                 />
                 <label className='text-sm font-medium text-gray-900 mb-2'>Ambulance Count</label>
                 <input 
                   type='text' 
                   name='AmbulanceCount'
                   value={formData.AmbulanceCount}
+                  onChange={handleChange}
                   placeholder='e.g., 5'
-                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
                 />
                 <label className='text-sm font-medium text-gray-900 mb-2'>Service Area</label>
                 <input 
                   type='text' 
                   name='ServiceArea'
                   value={formData.ServiceArea}
+                  onChange={handleChange}
                   placeholder='e.g., City, Region'
-                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+                  className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
                 />
               </>
             )}
@@ -127,37 +171,40 @@ const ServiceRegistration = () => {
             <label className='text-sm font-medium text-gray-900 mb-2'>Email</label>
             <input 
               type='text' 
-              name='ContactEmail'
-              value={formData.ContactEmail}
+              name='email'
+              value={formData.email}
+              onChange={handleChange}
               placeholder='Email'
-              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
             />
             <label className='text-sm font-medium text-gray-900 mb-2'>Phone Number</label>
             <input 
               type='text' 
-              name='ContactNumber'
-              value={formData.ContactNumber}
+              name='phoneNumber'
+              value={formData.phoneNumber}
+              onChange={handleChange}
               placeholder='Phone Number'
-              className='p-3  border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full'
+              className='p-3  border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full'
             />
             <label  className='text-sm font-medium text-gray-900 mb-2'>Address</label>
             <textarea
                 type='text'
-                value={formData.Address}
-                name='Address'
+                value={formData.address}
+                onChange={handleChange}
+                name='address'
                 placeholder='Organization Address...'
-                className='w-full h-30 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mb-10'
+                className='w-full h-30 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 mb-10'
             ></textarea>
             <label className='text-lg font-medium text-gray-900 mb-5'>Upload Documents</label>
-            <label className='text-sm font-medium text-gray-900 mb-2'>License/Certification Docukment</label>
+            <label className='text-sm font-medium text-gray-900 mb-2'>License/Certification Document</label>
             <input
               type='file'
-              name='LicenseDocument'
-              value={formData.LicenseDocument}
-              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
+              name='registrationCertificate'
+              onChange={handleChange}
+              className='p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100'
             />
             <div className='flex w-full justify-center items-center px-10'>
-              <button className='bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 w-full'>Submit Registration</button>
+              <button className='bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors duration-200 w-full'>Submit Registration</button>
             </div>
         </form>
       </div>

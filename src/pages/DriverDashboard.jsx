@@ -1,35 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import logo from '../assets/logo.png'
 import { Link } from 'react-router-dom';
+import { DriverContext } from '../context/CrewContext';
 
 const DriverDashboard = () => {
-    const [driverStatus, setDriverStatus] = useState('ONLINE');
-    const [activeDispatch, setActiveDispatch] = useState(null);
-    const [incomingDispatch, setIncomingDispatch] = useState(null);
+    const {
+        driverStatus,
+        toggleDriverStatus,
+        incomingDispatch,
+        setIncomingDispatch,
+        activeDispatch,
+        setActiveDispatch
+    } = useContext(DriverContext);
 
 
-
-
-    const toggleOnlineStatus = () => {
-        const newStatus = driverStatus === 'ONLINE'? 'OFFLINE':'ONLINE'
-        setDriverStatus(newStatus);
-        if (newStatus === 'OFFLINE' && activeDispatch) {
-        setActiveDispatch(null); 
-        setIncomingDispatch(null);
-      }
-    }
 
 
     
-
-
-
-
-
-
-
-
-
+    
 
   return (
     <div className='flex flex-col items-center justify-center h-screen bg-gradient-to-tl from-gray-700 to-gray-900 overflow-hidden'>
@@ -43,14 +31,19 @@ const DriverDashboard = () => {
                    {
                     <div className='flex items-center justify-evenly w-[100%]'>
                        <div> Status: {driverStatus} </div>
-                       <button className='border-2 h-[40px] w-[100px] rounded-xl' onClick={toggleOnlineStatus}> Go {driverStatus==='ONLINE'? 'OFFLINE':'ONLINE'} </button>
+                       <button className='border-2 h-[40px] w-[100px] rounded-xl' onClick={toggleDriverStatus}> Go {driverStatus==='ONLINE'? 'OFFLINE':'ONLINE'} </button>
                     </div>
                     }
                    <button className='border-2 h-[40px] w-[100px] rounded-xl'>Log Out</button>
                 </div>
             </div>
             <hr className='border-gray-300 mb-4 w-full' />
-            {!incomingDispatch? (
+
+            {driverStatus === 'OFFLINE'? (
+                 <div className="text-center text-gray-500 font-semibold text-xl">
+                    You are offline.
+                </div>
+            ): !incomingDispatch? (
                 <div className='flex justify-center items-center flex-col  h-[40%] text-xl text-gray-500 font-semibold'>
                     <span>No active dispatch</span>
                     <span>waiting for emergency....</span>
@@ -68,7 +61,7 @@ const DriverDashboard = () => {
                 </div>
             )
             }
-            <div className='w-[100%] bg-gray-300 h-72 rounded-lg mb-4 flex items-center justify-center'>
+            <div className='w-[100%]  bg-gray-300 h-72 rounded-lg mb-4 flex items-center justify-center'>
                   <p className='text-gray-600'>Map</p>
             </div>
             <div className='flex w-full justify-center items-center  '>
